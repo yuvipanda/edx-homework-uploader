@@ -1,0 +1,8 @@
+module_01_lab_01:
+  name: Module 01 - Lab 01 - Something Something
+  description: |
+     Something about how to install and set this up!
+
+     This can be arbitrary markdown. 
+     
+     Add a [download link](https://google.com) here too!
