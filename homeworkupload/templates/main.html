@@ -16,6 +16,7 @@
         <p>
           {{ commonmark(homework.description)|safe}}
         </p>
+        {% if user_id %}
         <form class="form" id="submit-form">
           <div class="form-group">
             <label for="homework-file">Select completed homework file</label>
@@ -25,6 +26,10 @@
             <input type="submit" id="submit" value="Submit file" />
           </div>
         </form>
+        <small>Your EdX user id is {{ user_id }}</small>
+        {% else %}
+        Please click the link from inside EdX to enable homework submission
+        {% endif %}
 
       </div>
   </body>
