@@ -20,16 +20,6 @@ class HomeWorkHandler(web.RequestHandler):
         html = template.render(**ns)
         self.write(html)
 
-    def get(self, hw):
-        homework_definitions = self.settings['homework_definitions']
-        if hw not in homework_definitions:
-            raise web.HTTPError(404)
-
-        user_id = self.get_secure_cookie('user_id')
-
-        homework = homework_definitions[hw]
-        self.render_template('main.html', homework=homework, user_id=user_id)
-
     def post(self, hw):
         # FIXME: Run a process that cleans up old nonces every other minute
         consumers = self.settings['consumers']
@@ -47,13 +37,15 @@ class HomeWorkHandler(web.RequestHandler):
                     self.request.headers,
                     args
             ):
-                self.set_secure_cookie(
-                    'user_id', self.get_body_argument('user_id'), expires_days=3, path=self.request.path
-                )
-                self.redirect(self.request.full_url())
+                user_id = self.get_body_argument('user_id')
         except LTILaunchValidationError as e:
             raise web.HTTPError(401, e.message)
-        pass
+
+        homework_definitions = self.settings['homework_definitions']
+        if hw not in homework_definitions:
+            raise web.HTTPError(404)
+
+        self.render_template('main.html', homework=homework_definitions[hw])
 
 def main():
     argparser = argparse.ArgumentParser()

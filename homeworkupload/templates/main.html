@@ -4,33 +4,26 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <script src="{{ static_url('dist/bundle.js') }}"></script>
-
-    <title>Home work!</title>
+    <!-- Use simple styles here, since we only need one form -->
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      form > div {
+        padding: 8px 0px;
+      }
+    </style>
   </head>
   <body>
-      <div class="container">
-        <h1>{{ homework.name }}</h1>
-        <p>
-          {{ commonmark(homework.description)|safe}}
-        </p>
-        {% if user_id %}
-        <form class="form" id="submit-form">
-          <div class="form-group">
-            <label for="homework-file">Select completed homework file</label>
-            <input type="file" class="form-control-file" id="homework-file" />
-          </div>
-          <div class="form-group">
-            <input type="submit" id="submit" value="Submit file" />
-          </div>
-        </form>
-        <small>Your EdX user id is {{ user_id }}</small>
-        {% else %}
-        Please click the link from inside EdX to enable homework submission
-        {% endif %}
-
+      <form id="submit-form">
+        <div>
+          <label for="homework-file">Select completed homework file:</label>
+          <input type="file" class="form-control-file" id="homework-file" />
+        </div>
+        <div>
+          <input type="submit" id="submit" value="Submit" />
+        </div>
+      </form>
       </div>
   </body>
 </html>
