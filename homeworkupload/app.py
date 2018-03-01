@@ -1,9 +1,6 @@
 import os
-import argparse
 import sys
-import yaml
 from jinja2 import Environment, FileSystemLoader
-from CommonMark import commonmark
 from tornado import httpserver, ioloop, web
 from homeworkupload.validator import LTILaunchValidator, LTILaunchValidationError
 
@@ -41,21 +38,9 @@ class HomeWorkHandler(web.RequestHandler):
         except LTILaunchValidationError as e:
             raise web.HTTPError(401, e.message)
 
-        homework_definitions = self.settings['homework_definitions']
-        if hw not in homework_definitions:
-            raise web.HTTPError(404)
-
-        self.render_template('main.html', homework=homework_definitions[hw])
+        self.render_template('main.html')
 
 def main():
-    argparser = argparse.ArgumentParser()
-    argparser.add_argument(
-        'homework_definitions',
-        help='Path to YAML file containing homework definitions'
-    )
-
-    args = argparser.parse_args()
-
     if 'COOKIE_SECRET' not in os.environ:
         print('Set a 32byte hex-encoded value as COOKIE_SECRET environment variable first!')
         sys.exit(1)
@@ -66,8 +51,6 @@ def main():
 
     passport_split = os.environ['LTI_PASSPORT'].split(':')
     consumers = {passport_split[1]: passport_split[2]}
-    with open(args.homework_definitions) as f:
-        homework_definitions = yaml.safe_load(f)
 
     jinja2_env = Environment(loader=FileSystemLoader([
         os.path.join(os.path.dirname(__file__), 'templates')
@@ -75,7 +58,6 @@ def main():
 
     settings = {
         'jinja2_env': jinja2_env,
-        'homework_definitions': homework_definitions,
         'static_path': os.path.join(os.path.dirname(__file__), "static"),
         'cookie_secret': os.environ['COOKIE_SECRET'],
         'consumers': consumers
